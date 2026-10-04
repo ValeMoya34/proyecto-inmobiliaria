@@ -1,14 +1,12 @@
-const Usuario = require('../models/Usuario');
-const Rol = require('../models/Rol');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const {registrarUsuario, loginUsuario} = require('../services/authService');
 
-// 1. REGISTRO DE USUARIOS
-exports.registrarUsuario = async (req, res) => {
+// 1. REGISTRO DE USUARIOS --> pasan el body al sevice
+exports.registrar = async (req, res, next) => {
+
   try {
-    const { nombre, apellido, email, password, telefono, rolNombre } = req.body;
+    const nuevoUsuario = await registrarUsuario(req.body);
 
-    // verifica si el email ya está registrado
+    /*verifica si el email ya está registrado --> todo esto lo delegue al service
     let usuarioExistente = await Usuario.findOne({ email });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: 'El correo electrónico ya está registrado.' });
@@ -36,7 +34,7 @@ exports.registrarUsuario = async (req, res) => {
       rol_id: rol._id
     });
 
-    await nuevoUsuario.save();
+    await nuevoUsuario.save();*/
 
     res.status(201).json({
       mensaje: 'Usuario registrado exitosamente.',
@@ -44,21 +42,21 @@ exports.registrarUsuario = async (req, res) => {
         id: nuevoUsuario._id,
         nombre: nuevoUsuario.nombre,
         apellido: nuevoUsuario.apellido,
-        email: nuevoUsuario.email
+        email: nuevoUsuario.email,
+        rol: nuevoUsuario.rol_id.nombre //nos trae el nombre del rol asignado
       }
     });
   } catch (error) {
-    console.error('Error en registrarUsuario:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor al registrar el usuario.' });
+    next(error); //agarra cualquier error y express lo manda al errorHandler que hice
   }
 };
 
 // 2. INICIO DE SESIÓN 
-exports.loginUsuario = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { token, usuario } = await loginUsuario(req.body);
 
-    // aca busca al usuario por email incluyendo los datos del rol
+    /*A esto tambien lo pase todo al service: aca busca al usuario por email incluyendo los datos del rol
     const usuario = await Usuario.findOne({ email }).populate('rol_id', 'nombre');
     if (!usuario) {
       return res.status(401).json({ mensaje: 'Credenciales inválidas.' });
@@ -80,7 +78,7 @@ exports.loginUsuario = async (req, res) => {
 
     const token = jwt.sign(payload, process.env.JWT_SECRET || 'secreto_temporal', {
       expiresIn: '24h'
-    });
+    });*/
 
     res.status(200).json({
       mensaje: 'Inicio de sesión exitoso.',
@@ -94,7 +92,6 @@ exports.loginUsuario = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error en loginUsuario:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor al iniciar sesión.' });
+    next(error);
   }
 };

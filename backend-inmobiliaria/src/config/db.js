@@ -1,0 +1,17 @@
+/*Aca ponemos la conexion a la base, para llamarla unsa sola 
+vez desde server. Va a ser mas practico cuando hagamos los test.*/
+require ('dotenv').config();
+const mongoose = require('mongoose');
+
+const connectarDB = async() =>{
+    try{
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log('MongoDB conectado');
+
+    }catch(error){
+        console.error('Error al conectar a MongoDB', error.message);
+        process.exit(1);
+    }
+};
+
+module.exports = connectarDB;

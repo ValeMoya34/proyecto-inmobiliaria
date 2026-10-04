@@ -14,7 +14,8 @@ const UsuarioSchema = new mongoose.Schema({
     required: [true, 'El email es obligatorio'],
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'El formato del correo no es válido']
   },
   password: {
     type: String,
@@ -22,6 +23,10 @@ const UsuarioSchema = new mongoose.Schema({
   },
   telefono: {
     type: String
+  },
+  acepta_terminos:{
+    type: String,
+    required: [true, 'Debe aceptar los terminos y condiciones']
   },
   rol_id: {
     type: mongoose.Schema.Types.ObjectId,
