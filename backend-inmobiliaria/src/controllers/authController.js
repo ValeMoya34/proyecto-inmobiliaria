@@ -1,4 +1,4 @@
-const {registrarUsuario, loginUsuario} = require('../services/authService');
+const {registrarUsuario, loginUsuario, solicitarRecuperacion, resetearPassword} = require('../services/authService');
 
 // 1. REGISTRO DE USUARIOS --> pasan el body al sevice
 exports.registrar = async (req, res, next) => {
@@ -91,6 +91,27 @@ exports.login = async (req, res, next) => {
         rol: usuario.rol_id.nombre
       }
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//3.Solicitar recuperacion
+exports.solicitarRecuperacion = async (req, res, next) => {
+  try {
+    await solicitarRecuperacion(req.body);
+    res.status(200).json({
+      mensaje: 'Si el email está registrado, vas a recibir un enlace de recuperación.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.resetearPassword = async (req, res, next) => {
+  try {
+    await resetearPassword(req.body);
+    res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' });
   } catch (error) {
     next(error);
   }
