@@ -96,6 +96,10 @@ exports.login = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+//3.Solicitar recuperacion
+>>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
 exports.solicitarRecuperacion = async (req, res, next) => {
   try {
     await solicitarRecuperacion(req.body);

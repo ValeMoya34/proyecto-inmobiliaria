@@ -10,4 +10,9 @@ router.post('/login', login);
 router.post('/recuperar-password', solicitarRecuperacion);
 router.post('/resetear-password', resetearPassword);
 
+//Rutas para recuperacion de password
+router.post('/recuperar-password', solicitarRecuperacion);
+
+router.post('/resetear-password', resetearPassword);
+
 module.exports = router;
