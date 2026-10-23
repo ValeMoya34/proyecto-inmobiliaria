@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const Usuario = require('../models/Usuario');
 const {Rol} = require('../models/Catalogos');
 const AppError = require('../utils/AppError');
@@ -104,4 +105,47 @@ const loginUsuario = async (datos) => {
     return {token, usuario};
 };
 
-module.exports = {registrarUsuario, loginUsuario};
+const solicitarRecuperacion = async (datos) => {
+  const { email } = datos;
+
+  const usuario = await Usuario.findOne({ email });
+
+  // Mismo criterio que en el login: no revelamos si el email existe o no.
+  // Si no existe, devolvemos éxito igual, para no filtrar qué emails están registrados.
+  if (!usuario) {
+    console.log(`Se intentó recuperar un email no registrado: ${email}`);
+    return;
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  usuario.tokenRecuperacion = token;
+  usuario.tokenRecuperacionExpira = Date.now() + 30 * 60 * 1000; // 30 minutos
+  await usuario.save();
+
+  // Acá, en un sistema real, se enviaría un mail con este link:
+  console.log(`[SIMULACIÓN DE EMAIL] Link de recuperación para ${email}:`);
+  console.log(`http://localhost:5173/resetear-password/${token}`);
+};
+
+const resetearPassword = async (datos) => {
+  const { token, nuevaPassword } = datos;
+  if (!nuevaPassword || nuevaPassword.length < 8) {
+    throw new AppError('La contraseña debe tener al menos 8 caracteres', 400);
+} 
+
+  const usuario = await Usuario.findOne({
+    tokenRecuperacion: token,
+    tokenRecuperacionExpira: { $gt: Date.now() } // $gt = "mayor que" ahora mismo, o sea no vencido
+  });
+
+  if (!usuario) {
+    throw new AppError('El enlace de recuperación es inválido o expiró', 400);
+  }
+
+  usuario.password = await bcrypt.hash(nuevaPassword, 10);
+  usuario.tokenRecuperacion = undefined;
+  usuario.tokenRecuperacionExpira = undefined;
+  await usuario.save();
+};
+
+module.exports = {registrarUsuario, loginUsuario, solicitarRecuperacion, resetearPassword};

@@ -32,6 +32,12 @@ const UsuarioSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Rol',
     required: true
+  },
+  tokenRecuperacion: {
+    type: String
+  },
+  tokenRecuperacionExpira: {
+    type: Date
   }
 }, {
   timestamps: true
