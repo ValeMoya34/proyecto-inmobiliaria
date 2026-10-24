@@ -33,11 +33,8 @@ const UsuarioSchema = new mongoose.Schema({
     ref: 'Rol',
     required: true
   },
-<<<<<<< HEAD
-=======
   //Para resolver la HU05 que hablaba de enviar un token para recuperar la contraseña
   //me quedo colgado eso. Va ser ficticio y poco seguro porque lo muestra en la consola pero no en front
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
   tokenRecuperacion: {
     type: String
   },

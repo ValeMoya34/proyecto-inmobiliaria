@@ -6,36 +6,6 @@ exports.registrar = async (req, res, next) => {
   try {
     const nuevoUsuario = await registrarUsuario(req.body);
 
-    /*verifica si el email ya está registrado --> todo esto lo delegue al service
-    let usuarioExistente = await Usuario.findOne({ email });
-    if (usuarioExistente) {
-      return res.status(400).json({ mensaje: 'El correo electrónico ya está registrado.' });
-    }
-
-    // aca busca el rol deseado o se asigna 'Cliente' por defecto
-    const nombreBuscado = rolNombre || 'Cliente';
-    let rol = await Rol.findOne({ nombre: nombreBuscado });
-    if (!rol) {
-      // si todavia no existen roles en la base de datos, se crea automáticamente
-      rol = await Rol.create({ nombre: nombreBuscado, descripcion: `Rol de ${nombreBuscado}` });
-    }
-
-    // encriptar contraseña con bcrypt
-    const salt = await bcrypt.genSalt(10);
-    const passwordEncriptada = await bcrypt.hash(password, salt);
-
-    // crear el nuevo usuario
-    const nuevoUsuario = new Usuario({
-      nombre,
-      apellido,
-      email,
-      password: passwordEncriptada,
-      telefono,
-      rol_id: rol._id
-    });
-
-    await nuevoUsuario.save();*/
-
     res.status(201).json({
       mensaje: 'Usuario registrado exitosamente.',
       usuario: {
@@ -47,7 +17,7 @@ exports.registrar = async (req, res, next) => {
       }
     });
   } catch (error) {
-    next(error); //agarra cualquier error y express lo manda al errorHandler que hice
+    next(error); //agarra cualquier error y express lo manda al errorHandler que hicimos
   }
 };
 
@@ -55,31 +25,7 @@ exports.registrar = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { token, usuario } = await loginUsuario(req.body);
-
-    /*A esto tambien lo pase todo al service: aca busca al usuario por email incluyendo los datos del rol
-    const usuario = await Usuario.findOne({ email }).populate('rol_id', 'nombre');
-    if (!usuario) {
-      return res.status(401).json({ mensaje: 'Credenciales inválidas.' });
-    }
-
-    // se comapra la contraseña q se ingresa con la contraseña encriptada
-    const passwordValido = await bcrypt.compare(password, usuario.password);
-    if (!passwordValido) {
-      return res.status(401).json({ mensaje: 'Credenciales inválidas.' });
-    }
-
-    // se genera token JWT q vence en 24 horas
-    const payload = {
-      usuario: {
-        id: usuario._id,
-        rol: usuario.rol_id.nombre
-      }
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'secreto_temporal', {
-      expiresIn: '24h'
-    });*/
-
+    
     res.status(200).json({
       mensaje: 'Inicio de sesión exitoso.',
       token,
@@ -96,10 +42,8 @@ exports.login = async (req, res, next) => {
   }
 };
 
-<<<<<<< HEAD
-=======
+
 //3.Solicitar recuperacion
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
 exports.solicitarRecuperacion = async (req, res, next) => {
   try {
     await solicitarRecuperacion(req.body);

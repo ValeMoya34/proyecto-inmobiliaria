@@ -1,10 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-<<<<<<< HEAD
-=======
-
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
 const Usuario = require('../models/Usuario');
 const {Rol} = require('../models/Catalogos');
 const AppError = require('../utils/AppError');
@@ -109,7 +105,6 @@ const loginUsuario = async (datos) => {
     return {token, usuario};
 };
 
-<<<<<<< HEAD
 const solicitarRecuperacion = async (datos) => {
   const { email } = datos;
 
@@ -152,44 +147,9 @@ const resetearPassword = async (datos) => {
   usuario.tokenRecuperacionExpira = undefined;
   await usuario.save();
 };
-=======
-//3.Recuperar contraseña
-const solicitarRecuperacion = async(datos) =>{
-    const {email} = datos;
-    const usuario = await Usuario.findOne({email});
 
-    if (!usuario) {
-        throw new AppError('Credenciales inválidas.', 401);
-    }
 
-    const token = crypto.randomBytes(32).toString('hex');
-    usuario.tokenRecuperacion = token;
-    usuario.tokenRecuperacionExpira = Date.now() + 30 * 60 * 1000; // 30 minutos
-    await usuario.save();
 
-    //En el sistema real en esta parte se enviaria un mail con el link
-    console.log(`[SIMULACION DE EMAIL] Link de recuperación para ${email}:`);
-    console.log(`http://localhost:5173/resetear-password/${token}`);
-};
 
-const resetearPassword = async(datos) =>{
-    const {token, nuevaPassword} = datos;
-
-    const usuario = await Usuario.findOne({
-        tokenRecuperacion: token,
-        tokenRecuperacionExpira: {$gt: Date.now()} //mayor que ahora
-    });
-
-    if (!usuario) {
-        throw new AppError('El enlace de recuperación es inválido o expiró', 400);
-    }
-
-    usuario.password = await bcrypt.hash(nuevaPassword, 10);
-    usuario.tokenRecuperacion = undefined;
-    usuario.tokenRecuperacionExpira = undefined;
-    await usuario.save();
-}
-
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
 
 module.exports = {registrarUsuario, loginUsuario, solicitarRecuperacion, resetearPassword};

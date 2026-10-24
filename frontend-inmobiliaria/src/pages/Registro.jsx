@@ -36,15 +36,13 @@ const Registro = () => {
       return;
     }
 
-<<<<<<< HEAD
-=======
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!regexEmail.test(formData.email)) {
       setError('El formato del email no es válido');
       return;
     }
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
+
     if (formData.password !== formData.confirmarPassword) {
       setError('Las contraseñas no coinciden');
       return;
@@ -118,11 +116,7 @@ const Registro = () => {
           <input type="text" name="apellido" onChange={handleChange} style={estiloInput()} />
 
           <label style={{ ...estiloLabel, marginTop: '14px' }}>Email: <span style={{ color: colores.errorTexto }}>*</span></label>
-<<<<<<< HEAD
           <input type="email" name="email" onChange={handleChange} style={estiloInput(errorEsDeEmail)} />
-=======
-          <input type="text" name="email" onChange={handleChange} style={estiloInput(errorEsDeEmail)} />
->>>>>>> 0880e2f45415e43a47ec01d867fe41ef3d303301
           {errorEsDeEmail && (
             <p style={{ color: colores.errorTexto, fontSize: '12px', margin: '2px 0 0' }}>{error}</p>
           )}
