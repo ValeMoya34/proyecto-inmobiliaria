@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Registro from './pages/Registro';
 import RecuperarPassword from './pages/RecuperarPassword';
 import ResetearPassword from './pages/ResetearPassword';
+import AdminUsuarios from './pages/AdminUsuarios';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/recuperar-password" element={<RecuperarPassword/>}/>
           <Route path="/resetear-password/:token" element={<ResetearPassword/>}/>
+          <Route path="/admin/usuarios" element={<AdminUsuarios />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -24,6 +24,9 @@ const UsuarioSchema = new mongoose.Schema({
   telefono: {
     type: String
   },
+  direccion: {
+    type: String // Útil para la gestión de datos de perfil (HU08 / HU09)
+  },
   acepta_terminos:{
     type: String,
     required: [true, 'Debe aceptar los terminos y condiciones']
@@ -33,8 +36,12 @@ const UsuarioSchema = new mongoose.Schema({
     ref: 'Rol',
     required: true
   },
-  //Para resolver la HU05 que hablaba de enviar un token para recuperar la contraseña
-  //me quedo colgado eso. Va ser ficticio y poco seguro porque lo muestra en la consola pero no en front
+  // NUEVO PARA EL SPRINT 2 (HU10: Baja lógica)
+  activo: {
+    type: Boolean,
+    default: true
+  },
+  // Para resolver la HU05 que hablaba de enviar un token para recuperar la contraseña
   tokenRecuperacion: {
     type: String
   },
