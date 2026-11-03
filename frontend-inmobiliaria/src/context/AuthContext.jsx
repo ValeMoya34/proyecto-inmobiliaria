@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // al cargar la app, verifica si hay un usuario guardado en localStorage
-    const usuarioGuardado = localStorage.getItem('usuario');
+    const usuarioGuardado = localStorage.getItem("usuario");
     if (usuarioGuardado) {
       setUsuario(JSON.parse(usuarioGuardado));
     }
@@ -14,20 +14,26 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (datosUsuario, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('usuario', JSON.stringify(datosUsuario));
+    localStorage.setItem("token", token);
+    localStorage.setItem("usuario", JSON.stringify(datosUsuario));
     setUsuario(datosUsuario);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
     setUsuario(null);
   };
 
-  return(
-<AuthContext.Provider value={{ usuario, login, logout, cargando }}>
-{children}
-</AuthContext.Provider>
-);
+  const actualizarSesion = (datosNuevos) => {
+    const actualizado = { ...usuario, ...datosNuevos };
+    localStorage.setItem("usuario", JSON.stringify(actualizado));
+    setUsuario(actualizado);
+  };
+
+  return (
+    <AuthContext.Provider value={{ usuario, login, logout, cargando, actualizarSesion }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

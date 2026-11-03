@@ -115,16 +115,21 @@ const Registro = () => {
           <label style={{ ...estiloLabel, marginTop: '14px' }}>Apellido: <span style={{ color: colores.errorTexto }}>*</span></label>
           <input type="text" name="apellido" onChange={handleChange} style={estiloInput()} />
 
+          <label style={{ ...estiloLabel, marginTop: '14px' }}>
+            Teléfono <span style={{ color: colores.textoMuted, fontWeight: 400 }}>(opcional)</span>
+          </label>
+          <input type="tel" name="telefono" onChange={handleChange} style={estiloInput()} />
+
+          <label style={{ ...estiloLabel, marginTop: '14px' }}>
+            Dirección <span style={{ color: colores.textoMuted, fontWeight: 400 }}>(opcional)</span>
+          </label>
+          <input type="text" name="direccion" onChange={handleChange} style={estiloInput()} />
+
           <label style={{ ...estiloLabel, marginTop: '14px' }}>Email: <span style={{ color: colores.errorTexto }}>*</span></label>
           <input type="email" name="email" onChange={handleChange} style={estiloInput(errorEsDeEmail)} />
           {errorEsDeEmail && (
             <p style={{ color: colores.errorTexto, fontSize: '12px', margin: '2px 0 0' }}>{error}</p>
           )}
-
-          <label style={{ ...estiloLabel, marginTop: '14px' }}>
-            Teléfono <span style={{ color: colores.textoMuted, fontWeight: 400 }}>(opcional)</span>
-          </label>
-          <input type="tel" name="telefono" onChange={handleChange} style={estiloInput()} />
 
           <label style={{ ...estiloLabel, marginTop: '14px' }}>Contraseña: <span style={{ color: colores.errorTexto }}>*</span></label>
           <input type="password" name="password" onChange={handleChange} style={estiloInput()} />

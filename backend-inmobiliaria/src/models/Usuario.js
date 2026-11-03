@@ -3,11 +3,15 @@ const mongoose = require('mongoose');
 const UsuarioSchema = new mongoose.Schema({
   nombre: {
     type: String,
-    required: [true, 'El nombre es obligatorio']
+    trim: true,
+    required: [true, 'El nombre es obligatorio'],
+    match: [/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]{2,}$/, 'El nombre solo puede tener letras (mínimo 2)']
   },
   apellido: {
     type: String,
-    required: [true, 'El apellido es obligatorio']
+    trim: true,
+    required: [true, 'El apellido es obligatorio'],
+    match: [/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]{2,}$/, 'El apellido solo puede tener letras (mínimo 2)']
   },
   email: {
     type: String,
@@ -22,13 +26,17 @@ const UsuarioSchema = new mongoose.Schema({
     required: [true, 'La contraseña es obligatoria']
   },
   telefono: {
-    type: String
+    type: String,
+    trim:true,
+    match: [/^[0-9]{8,15}$/, 'El teléfono debe tener solo números, entre 5 y 15 dígitos']
   },
   direccion: {
-    type: String // Útil para la gestión de datos de perfil (HU08 / HU09)
+    type: String, // Útil para la gestión de datos de perfil (HU08 / HU09)
+    trim: true,
+    maxlength: [100, 'La dirección no puede superar los 100 caracteres']
   },
   acepta_terminos:{
-    type: String,
+    type: Boolean,
     required: [true, 'Debe aceptar los terminos y condiciones']
   },
   rol_id: {

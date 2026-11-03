@@ -33,14 +33,7 @@ const registrarUsuario = async (datos) => {
     if (usuarioExistente) {
         throw new AppError('El correo electrónico ya está registrado.', 409);
     }
-    /* aca busca el rol deseado o se asigna 'Cliente' por defecto
-    const nombreBuscado = rolNombre || 'Cliente';
-    let rol = await Rol.findOne({ nombre: nombreBuscado });
-    if (!rol) {
-      // si todavia no existen roles en la base de datos, se crea automáticamente
-      rol = await Rol.create({ nombre: nombreBuscado, descripcion: `Rol de ${nombreBuscado}` });
-    }*/
-
+    
     // encriptar contraseña con bcrypt
     const salt = await bcrypt.genSalt(10);
     const passwordEncriptada = await bcrypt.hash(password, salt);
@@ -90,6 +83,12 @@ const loginUsuario = async (datos) => {
       throw new AppError('Credenciales inválidas', 401);
     }
 
+    //Agrego para que no deje iniciar sesion si esta desactivado
+    if (!usuario.activo) {
+      throw new AppError('Tu cuenta está desactivada. Contactá a la inmobiliaria', 403);
+    }
+
+
     //Esto lo puse como un control para el desarrollador
     if (!config.jwtSecret) {
         throw new AppError('Falta configurar el JWT_SECRET en el servidor', 500);
@@ -101,9 +100,32 @@ const loginUsuario = async (datos) => {
         config.jwtSecret,
         { expiresIn: config.jwtExpiresIn || '24h'}
     );
-
     return {token, usuario};
 };
+
+//Agrego este para verificar que usuario inicio la sesion y usarlo en el middleware
+const verificarSesion = async(token) =>{
+
+  let payload; //Verifica el payload
+
+  try{
+    //Error si el token vencio o es falso
+    payload = jwt.verify(token, config.jwtSecret);
+
+  }catch(error){
+    throw new AppError('Tu sesión expiró, inicia sesión nuevamente',401);
+
+  }
+   //Busca al usuario con el id que viene dentro del token, incluyendo el nombre de su rol
+  const usuario = await Usuario.findById(payload.id).populate('rol_id', 'nombre');
+
+  //Si ya no existe o fue desactivado (HU10), la sesión no es válida
+  if (!usuario || !usuario.activo) {
+    throw new AppError('Tu sesión no es válida, iniciá sesión nuevamente', 401);
+  }
+  
+  return usuario;
+}
 
 const solicitarRecuperacion = async (datos) => {
   const { email } = datos;
@@ -152,4 +174,4 @@ const resetearPassword = async (datos) => {
 
 
 
-module.exports = {registrarUsuario, loginUsuario, solicitarRecuperacion, resetearPassword};
+module.exports = {registrarUsuario, loginUsuario, verificarSesion, solicitarRecuperacion, resetearPassword};
